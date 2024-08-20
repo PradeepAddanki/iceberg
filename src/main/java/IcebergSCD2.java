@@ -43,9 +43,9 @@ public class IcebergSCD2 extends Setup {
         spark.sql("INSERT INTO default.stg_scd2_table " +
                 "select 3, 'customer_c-V1', to_date('2020-02-15', 'yyyy-MM-dd');");
 
-        LOGGER.warn("------- BEFORE -------------------------------");
+        //LOGGER.warn("------- BEFORE -------------------------------");
         spark.table("default.scd2_table").orderBy("customer_id", "effective_date").show();
-        LOGGER.warn("------- NEW DATA -------------------------------");
+        //LOGGER.warn("------- NEW DATA -------------------------------");
         spark.table("default.stg_scd2_table").show();
 
         String merge = "MERGE INTO default.scd2_table t \n" +
@@ -67,9 +67,9 @@ public class IcebergSCD2 extends Setup {
                 ";";
         spark.sql(merge);
 
-        LOGGER.warn("------- AFTER -------------------------------");
+        //LOGGER.warn("------- AFTER -------------------------------");
         spark.table("default.scd2_table").orderBy("customer_id", "effective_date").show();
-        LOGGER.warn("------- FINAL S3 FILES -------------------------------");
+        //LOGGER.warn("------- FINAL S3 FILES -------------------------------");
         s3.listFiles();
     }
 

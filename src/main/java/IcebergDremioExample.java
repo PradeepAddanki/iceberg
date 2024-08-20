@@ -24,11 +24,22 @@ public class IcebergDremioExample {
                 .appName("Iceberg Dremio Example")
                 .config("spark.sql.catalog.spark_catalog", "org.apache.iceberg.spark.SparkSessionCatalog")
                 .config("spark.sql.catalog.spark_catalog.type", "hadoop")
-                //.config("spark.sql.catalog.spark_catalog.warehouse", "hdfs://<your-hdfs-path>/warehouse")
+               // .config("spark.sql.catalog.spark_catalog.warehouse", "hdfs://localhost/warehouse")
+                .config("spark.master", "local")
                 .getOrCreate();
 
+//        SparkSession spark = SparkSession.builder()
+//                .appName("Dremio Spark Application")
+//                .config("spark.master", "local")
+//                .config("spark.sql.catalogImplementation", "org.apache.iceberg.spark.SparkSessionCatalog")
+//                .config("spark.sql.catalog.dremio", "com.dremio.spark")
+//                .config("spark.dremio.url", "jdbc:arrow-flight-sql://localhost:32010/?schema=@addanki")
+//                .config("spark.dremio.username", "addanki")
+//                .config("spark.dremio.password", "Cts@2024")
+//                .getOrCreate();
+
         // Step 2: Load the Iceberg table
-        TableIdentifier tableIdentifier = TableIdentifier.of(Namespace.of("namespace"), "table_name");
+        TableIdentifier tableIdentifier = TableIdentifier.of(Namespace.of("@addanki"), "data_20200602");
         Catalog catalog = new HadoopCatalog(spark.sparkContext().hadoopConfiguration(), "<your-hdfs-path>/warehouse");
         Table table = catalog.loadTable(tableIdentifier);
 
@@ -42,7 +53,7 @@ public class IcebergDremioExample {
         String url = "jdbc:dremio:direct=<dremio_host>:<port>;user=<user>;password=<password>";
         try (Connection conn = DriverManager.getConnection(url)) {
             Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM <namespace>.<table_name>");
+            ResultSet rs = stmt.executeQuery("SELECT * FROM @addanki.data_20200602");
 
             while (rs.next()) {
                 System.out.println("Column1: " + rs.getString("column1") + ", Column2: " + rs.getString("column2"));
