@@ -8,7 +8,7 @@ public class SparkS3AExample {
 
     private static final String LOCAL_NODE_ID = "local[*]";
     private static final String FORMAT = "csv";
-    private static final String APP_NAME = "SparkS3AExample";
+    private static final String APP_NAME = "sparks3aexample029";
 
 
     public static void main(String[] args) {
@@ -22,21 +22,21 @@ public class SparkS3AExample {
         SparkSession sparkSession = SparkSession.builder()
                 .config(sparkConf)
                 .getOrCreate();
-       // sparkSession.sparkContext().setLogLevel("DEBUG");
+        sparkSession.sparkContext().setLogLevel("DEBUG");
         Configuration configuration = sparkSession.sparkContext().hadoopConfiguration();
         configuration.set("fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem");
-        configuration.set("fs.s3a.access.key", "<ACCESS_KEY>");
+        configuration.set("fs.s3a.access.key", "AKIA54WIGLHMY64FBEHTAA");
         configuration.set("fs.s3a.path.style.access", "true");
         configuration.set("fs.s3a.connection.establish.timeout", "501000");
         configuration.set("spark.master", "local");
-        configuration.set("fs.s3a.secret.key", "<SECRET_KEY>");
-        configuration.set("fs.s3a.endpoint", "<S3A_ENDPOINT>");
+        configuration.set("fs.s3a.secret.key", "h5DaEqgvig5qLCkyC8AnpVqKG3LaOcxdn7C/T3ryasdaa");
+       // configuration.set("fs.s3a.endpoint", "https://sparks3aexample029.s3.us-east-1.amazonaws.com");
         // Read a CSV file with the header, and store it in a DataFrame.
         Dataset<Row> df = sparkSession.read().format(FORMAT)
                 .option("header", "true")
-                .load("s3a://ramirtt/names.csv");
+                .load("s3a://sparks3aexample029/user1_credentials.csv");
         //Show the first 15 rows.
-        df.show(10);
+        df.show();
     }
 
 }
