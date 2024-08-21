@@ -28,11 +28,11 @@ public class ParquetToS3 {
        //sparkSession.sparkContext().setLogLevel("DEBUG");
         Configuration configuration = sparkSession.sparkContext().hadoopConfiguration();
         configuration.set("fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem");
-        configuration.set("fs.s3a.access.key", "fs.s3a.access.key");
+        configuration.set("fs.s3a.access.key", "${fs.s3a.access.key}");
         configuration.set("fs.s3a.path.style.access", "true");
         configuration.set("fs.s3a.connection.establish.timeout", "501000");
         configuration.set("spark.master", "local");
-        configuration.set("fs.s3a.secret.key", "fs.s3a.secret.key");
+        configuration.set("fs.s3a.secret.key", "${fs.s3a.secret.key}");
 
         // Define schema
         StructType schema = new StructType(new StructField[]{
