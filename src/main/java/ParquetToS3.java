@@ -13,7 +13,6 @@ import java.util.List;
 
 public class ParquetToS3 {
     private static final String LOCAL_NODE_ID = "local[*]";
-    private static final String FORMAT = "csv";
     private static final String APP_NAME = "sparks3aexample029";
     public static void main(String[] args) {
         SparkConf sparkConf =
@@ -51,7 +50,7 @@ public class ParquetToS3 {
         Dataset<Row> df = sparkSession.createDataFrame(data, schema);
 
         // Write the DataFrame to S3 in Parquet format
-        df.write().parquet("s3a://sparks3aexample029/parquet_name/output.parquet");
+        df.write().parquet("s3a://sparks3aexample029/parquet_name_1/output.parquet");
 
         sparkSession.stop();
     }
