@@ -27,17 +27,18 @@ public class IcebergHadoopTables extends Setup {
         PartitionSpec pspec = PartitionSpec.builderFor(tableSchema).identity("name").bucket("age", 5).build();
         Table mytable = tables.create(tableSchema, pspec, tablePath);
         // sampleDf.write().format("iceberg").mode("append").save(tablePath);
-        spark.table("default.iceberg_v1table").show(false);
+        spark.table("default.iceberg_v1table").show(true);
+       // spark.table()
 
         // alter schema
         mytable.updateSchema().addColumn("new_column", Types.IntegerType.get()).commit();
         LOGGER.error("After Alter\n{}", tables.load(tablePath).schema());
         // avoid caching issues
         spark = spark.cloneSession();
-        spark.table("default.iceberg_v1table").show(false);
+        spark.table("default.iceberg_v1table").show(true);
         Dataset<Row> newDf = spark.sql("select 1 as age, 'test' as name, 5 as new_column ");
         newDf.write().format("iceberg").mode("append").saveAsTable("default.iceberg_v1table");
-        spark.table("default.iceberg_v1table").show(false);
+        spark.table("default.iceberg_v1table").show(true);
 
         s3.listFiles();
 

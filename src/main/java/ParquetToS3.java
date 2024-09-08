@@ -25,33 +25,37 @@ public class ParquetToS3 {
         SparkSession sparkSession = SparkSession.builder()
                 .config(sparkConf)
                 .getOrCreate();
-       //sparkSession.sparkContext().setLogLevel("DEBUG");
+        //sparkSession.sparkContext().setLogLevel("DEBUG");
         Configuration configuration = sparkSession.sparkContext().hadoopConfiguration();
         configuration.set("fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem");
-        configuration.set("fs.s3a.access.key", "${fs.s3a.access.key}");
         configuration.set("fs.s3a.path.style.access", "true");
         configuration.set("fs.s3a.connection.establish.timeout", "501000");
         configuration.set("spark.master", "local");
-        configuration.set("fs.s3a.secret.key", "${fs.s3a.secret.key}");
+        configuration.set("fs.s3a.access.key", "${access.key}");
+        configuration.set("fs.s3a.access.key", "${access.key}");
 
-        // Define schema
-        StructType schema = new StructType(new StructField[]{
+        // Step 2: Define schema
+        StructType schema = DataTypes.createStructType(new StructField[]{
+                DataTypes.createStructField("id", DataTypes.IntegerType, false),
                 DataTypes.createStructField("name", DataTypes.StringType, false),
                 DataTypes.createStructField("age", DataTypes.IntegerType, false)
         });
 
-        // Create a list of Rows
+        // Step 3: Create some sample data
         List<Row> data = Arrays.asList(
-                RowFactory.create("John Doe", 30),
-                RowFactory.create("Jane Doe", 25)
+                RowFactory.create(1, "qwqwqwqw", 29),
+                RowFactory.create(2, "test_two", 35),
+                RowFactory.create(3, "test_three", 23)
         );
 
-        // Create a DataFrame
+        // Step 4: Create DataFrame from data
         Dataset<Row> df = sparkSession.createDataFrame(data, schema);
 
-        // Write the DataFrame to S3 in Parquet format
-        df.write().parquet("s3a://sparks3aexample029/parquet_name_1/output.parquet");
+        // Step 5: Write DataFrame to Parquet file in S3
+        String outputPath = "s3a://sparks3aexample029/output/output.parquet";
+        df.coalesce(1).write().mode("overwrite").parquet(outputPath);
 
+        // Stop the Spark session
         sparkSession.stop();
     }
 }
