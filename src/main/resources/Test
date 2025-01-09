@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# Check if a log file is provided
+if [ $# -ne 1 ]; then
+  echo "Usage: $0 <logfile>"
+  exit 1
+fi
+
+LOGFILE=$1
+
+# Check if the log file exists
+if [ ! -f "$LOGFILE" ]; then
+  echo "Error: File '$LOGFILE' not found!"
+  exit 1
+fi
+
+# Extract exceptions, count occurrences, and list unique ones
+echo "Finding unique exceptions and their counts in $LOGFILE..."
+
+grep -oP '([a-zA-Z0-9._]+Exception)' "$LOGFILE" | sort | uniq -c | sort -nr > exceptions_report.txt
+
+echo "Unique exceptions and their counts saved to 'exceptions_report.txt'"
+cat exceptions_report.txt
