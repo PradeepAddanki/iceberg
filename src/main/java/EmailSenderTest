@@ -1,0 +1,37 @@
+package com.baeldung.client;
+
+import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mockStatic;
+
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
+import com.baeldung.YourClass;
+import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+
+public class EmailSenderTest {
+
+    @Test
+    void testEmailTaskSubmitted() throws Exception {
+        // Mock ExecutorService and Future
+        ExecutorService mockExecutor = mock(ExecutorService.class);
+        Future<?> mockFuture = mock(Future.class);
+        when(mockExecutor.submit(any(Callable.class))).thenReturn(mockFuture);
+
+        // Mock static method
+        try (MockedStatic<Executors> mockedExecutors = mockStatic(Executors.class)) {
+            mockedExecutors.when(Executors::newSingleThreadExecutor).thenReturn(mockExecutor);
+
+            // Call the class/method that uses the static ExecutorService
+            YourClass obj = new YourClass();
+            obj.sendEmail(); // <-- this method uses the es.submit(...)
+
+            // Verify that submit was called
+            verify(mockExecutor).submit(any(Callable.class));
+        }
+    }
+}
